@@ -11,12 +11,6 @@ import (
 func (s *Database) GetUsers(ctx context.Context) ([]entity.User, error) {
 	var result []entity.User
 
-	err := s.SqlDb.PingContext(ctx)
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-
 	rows, err := s.SqlDb.QueryContext(ctx, "select id, username, email, password, age, createdat, updatedat from users")
 	if err != nil {
 		log.Fatal(err)
@@ -46,12 +40,6 @@ func (s *Database) GetUsers(ctx context.Context) ([]entity.User, error) {
 func (s *Database) GetUserByID(ctx context.Context, userid int) (*entity.User, error) {
 	result := &entity.User{}
 
-	err := s.SqlDb.PingContext(ctx)
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-
 	rows, err := s.SqlDb.QueryContext(ctx, "select id, username, email, password, age, createdat, updatedat from users where id = @ID",
 		sql.Named("ID", userid))
 	if err != nil {
@@ -80,13 +68,7 @@ func (s *Database) GetUserByID(ctx context.Context, userid int) (*entity.User, e
 func (s *Database) CreateUser(ctx context.Context, user entity.User) (string, error) {
 	var result string
 
-	err := s.SqlDb.PingContext(ctx)
-	if err != nil {
-		log.Fatal(err)
-		return "", err
-	}
-
-	_, err = s.SqlDb.ExecContext(ctx, "insert into users (id, username, email, password, age, createdat, updatedat) values (@id, @username, @email, @password, @age, @createdat, @updatedat)",
+	_, err := s.SqlDb.ExecContext(ctx, "insert into users (id, username, email, password, age, createdat, updatedat) values (@id, @username, @email, @password, @age, @createdat, @updatedat)",
 		sql.Named("id", user.Id),
 		sql.Named("username", user.Username),
 		sql.Named("email", user.Email),
@@ -107,13 +89,7 @@ func (s *Database) CreateUser(ctx context.Context, user entity.User) (string, er
 func (s *Database) UpdateUser(ctx context.Context, userId int, user entity.User) (string, error) {
 	var result string
 
-	err := s.SqlDb.PingContext(ctx)
-	if err != nil {
-		log.Fatal(err)
-		return "", err
-	}
-
-	_, err = s.SqlDb.ExecContext(ctx, "update users set username = @username,email = @email, password = @password, age = @age, updatedat = @updatedat where id = @id",
+	_, err := s.SqlDb.ExecContext(ctx, "update users set username = @username,email = @email, password = @password, age = @age, updatedat = @updatedat where id = @id",
 		sql.Named("id", userId),
 		sql.Named("username", user.Username),
 		sql.Named("email", user.Email),
@@ -133,13 +109,7 @@ func (s *Database) UpdateUser(ctx context.Context, userId int, user entity.User)
 func (s *Database) DeleteUser(ctx context.Context, userId int) (string, error) {
 	var result string
 
-	err := s.SqlDb.PingContext(ctx)
-	if err != nil {
-		log.Fatal(err)
-		return "", err
-	}
-
-	_, err = s.SqlDb.ExecContext(ctx, "delete from users where id=@id",
+	_, err := s.SqlDb.ExecContext(ctx, "delete from users where id=@id",
 		sql.Named("id", userId))
 	if err != nil {
 		log.Fatal(err)
