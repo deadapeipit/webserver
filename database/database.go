@@ -1,18 +1,28 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"webserver/entity"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
+
+type DatabaseIface interface {
+	GetUsers(ctx context.Context) ([]entity.User, error)
+	GetUserByID(ctx context.Context, userid int) (*entity.User, error)
+	CreateUser(ctx context.Context, user entity.User) (string, error)
+	UpdateUser(ctx context.Context, userId int, user entity.User) (string, error)
+	DeleteUser(ctx context.Context, userId int) (string, error)
+}
 
 type Database struct {
 	ConnectionString string
 	SqlDb            *sql.DB
 }
 
-func NewSqlConnection(connectionString string) *Database {
+func NewSqlConnection(connectionString string) DatabaseIface {
 	s := Database{
 		ConnectionString: connectionString,
 	}

@@ -52,7 +52,8 @@ func (s *Database) GetUserByID(ctx context.Context, userid int) (*entity.User, e
 		return nil, err
 	}
 
-	rows, err := s.SqlDb.QueryContext(ctx, "select id, username, email, password, age, createdat, updatedat from users where id = @ID", sql.Named("ID", userid))
+	rows, err := s.SqlDb.QueryContext(ctx, "select id, username, email, password, age, createdat, updatedat from users where id = @ID",
+		sql.Named("ID", userid))
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -138,7 +139,8 @@ func (s *Database) DeleteUser(ctx context.Context, userId int) (string, error) {
 		return "", err
 	}
 
-	_, err = s.SqlDb.ExecContext(ctx, "delete from users where id=@id", sql.Named("id", userId))
+	_, err = s.SqlDb.ExecContext(ctx, "delete from users where id=@id",
+		sql.Named("id", userId))
 	if err != nil {
 		log.Fatal(err)
 		return "", err

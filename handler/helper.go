@@ -6,7 +6,7 @@ import (
 	"webserver/database"
 )
 
-var SqlConnect *database.Database
+var SqlConnect database.DatabaseIface
 
 type response struct {
 	Status int         `json:"status"`
