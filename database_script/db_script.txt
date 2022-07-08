@@ -1,0 +1,216 @@
+---- TABLE -----
+
+CREATE TABLE [dbo].[Users](
+	[Id] [int] NOT NULL,
+	[Username] [varchar](50) NOT NULL,
+	[Email] [varchar](50) NULL,
+	[Password] [varchar](50) NULL,
+	[Age] [int] NULL,
+	[Createdat] [datetime] NULL,
+	[Updatedat] [datetime] NULL
+) ON [PRIMARY]
+GO
+
+----------------------------------------
+----------------------------------------
+
+CREATE TABLE [dbo].[Orders](
+	[OrderId] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerName] [varchar](50) NULL,
+	[OrderedAt] [datetime] NULL,
+ CONSTRAINT [PK_Orders] PRIMARY KEY CLUSTERED 
+(
+	[OrderId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+----------------------------------------
+----------------------------------------
+
+CREATE TABLE [dbo].[Items](
+	[ItemId] [int] IDENTITY(1,1) NOT NULL,
+	[ItemCode] [varchar](50) NULL,
+	[Description] [varchar](50) NULL,
+	[Quantity] [int] NULL,
+	[OrderId] [int] NOT NULL,
+ CONSTRAINT [PK_Items] PRIMARY KEY CLUSTERED 
+(
+	[ItemId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Items]  WITH CHECK ADD  CONSTRAINT [FK_Items_Items] FOREIGN KEY([OrderId])
+REFERENCES [dbo].[Orders] ([OrderId])
+GO
+
+ALTER TABLE [dbo].[Items] CHECK CONSTRAINT [FK_Items_Items]
+GO
+
+
+---- USER-DEFINED TABLE TYPES ----
+
+CREATE TYPE [dbo].[ut_OrderItems] AS TABLE(
+	[ItemCode] [varchar](50) NOT NULL,
+	[Description] [varchar](50) NOT NULL,
+	[Quantity] [int] NOT NULL
+)
+GO
+
+
+---- STORED PROCEDURE ----
+
+CREATE PROCEDURE [dbo].[sp_createOrder]
+(
+	-- Add the parameters for the stored procedure here
+	@pCustomerName varchar(50),
+	@pOrderedAt datetime,
+	@pItems ut_OrderItems READONLY
+)
+AS
+BEGIN
+	DECLARE @sNewOrderId int
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    	-- Insert statements for procedure here
+	INSERT INTO [dbo].[Orders]
+           ([CustomerName]
+           ,[OrderedAt])
+     	VALUES
+           (@pCustomerName,
+           @pOrderedAt)
+
+	SELECT @sNewOrderId = SCOPE_IDENTITY()
+
+	INSERT INTO [dbo].[Items]
+           ([ItemCode]
+           ,[Description]
+           ,[Quantity]
+           ,[OrderId])
+     	SELECT [ItemCode], [Description],[Quantity], @sNewOrderId
+	FROM @pItems
+END
+GO
+
+----------------------------------------
+----------------------------------------
+
+CREATE PROCEDURE [dbo].[sp_updateOrder]
+(
+	-- Add the parameters for the stored procedure here
+	@pOrderId int,
+	@pCustomerName varchar(50),
+	@pOrderedAt datetime,
+	@pItems ut_OrderItems READONLY
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    	-- Insert statements for procedure here
+	IF EXISTS (SELECT TOP 1 OrderId FROM Orders where OrderId = @pOrderId)
+	BEGIN
+		UPDATE [dbo].[Orders]
+		SET [CustomerName] = @pCustomerName,
+      		[OrderedAt] = @pOrderedAt
+		WHERE [OrderId]=@pOrderId
+
+		DELETE FROM [dbo].[Items]
+		WHERE [OrderId]=@pOrderId
+
+		INSERT INTO [dbo].[Items]
+           	([ItemCode]
+          	,[Description]
+           	,[Quantity]
+           	,[OrderId])
+     		SELECT [ItemCode], [Description],[Quantity], @pOrderId
+	 	FROM @pItems
+	END
+END
+GO
+
+----------------------------------------
+----------------------------------------
+
+CREATE PROCEDURE [dbo].[sp_deleteOrder]
+(
+	-- Add the parameters for the stored procedure here
+	@pOrderId int
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    	-- Insert statements for procedure here
+	IF EXISTS (SELECT TOP 1 OrderId FROM Orders where OrderId = @pOrderId)
+	BEGIN
+		DELETE FROM [dbo].[Items]
+		WHERE [OrderId]=@pOrderId
+
+		DELETE from [dbo].[Orders]
+		WHERE [OrderId]=@pOrderId
+	END
+END
+GO
+
+----------------------------------------
+----------------------------------------
+
+CREATE PROCEDURE [dbo].[sp_getOrderByID]
+(
+	-- Add the parameters for the stored procedure here
+	@pOrderId int
+)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    	-- Insert statements for procedure here
+	SELECT [OrderId]
+      	,[CustomerName]
+      	,[OrderedAt]
+	FROM [dbo].[Orders]
+	WHERE [OrderId]=@pOrderId
+
+	SELECT [ItemCode]
+      	,[Description]
+      	,[Quantity]
+      	,[OrderId]
+	FROM [dbo].[Items]
+	WHERE [OrderId]=@pOrderId
+END
+GO
+
+----------------------------------------
+----------------------------------------
+
+CREATE PROCEDURE [dbo].[sp_getOrders]
+
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    	-- Insert statements for procedure here
+	SELECT [OrderId]
+      	,[CustomerName]
+      	,[OrderedAt]
+	FROM [dbo].[Orders]
+
+	SELECT [ItemCode]
+      	,[Description]
+      	,[Quantity]
+      	,[OrderId]
+	FROM [dbo].[Items]
+END
+GO

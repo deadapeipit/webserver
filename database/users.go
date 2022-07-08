@@ -37,11 +37,11 @@ func (s *Database) GetUsers(ctx context.Context) ([]entity.User, error) {
 	return result, nil
 }
 
-func (s *Database) GetUserByID(ctx context.Context, userid int) (*entity.User, error) {
+func (s *Database) GetUserByID(ctx context.Context, i int) (*entity.User, error) {
 	result := &entity.User{}
 
 	rows, err := s.SqlDb.QueryContext(ctx, "select id, username, email, password, age, createdat, updatedat from users where id = @ID",
-		sql.Named("ID", userid))
+		sql.Named("ID", i))
 	if err != nil {
 		log.Fatal(err)
 		return nil, err
@@ -65,15 +65,15 @@ func (s *Database) GetUserByID(ctx context.Context, userid int) (*entity.User, e
 	return result, nil
 }
 
-func (s *Database) CreateUser(ctx context.Context, user entity.User) (string, error) {
+func (s *Database) CreateUser(ctx context.Context, i entity.User) (string, error) {
 	var result string
 
 	_, err := s.SqlDb.ExecContext(ctx, "insert into users (id, username, email, password, age, createdat, updatedat) values (@id, @username, @email, @password, @age, @createdat, @updatedat)",
-		sql.Named("id", user.Id),
-		sql.Named("username", user.Username),
-		sql.Named("email", user.Email),
-		sql.Named("password", user.Password),
-		sql.Named("age", user.Age),
+		sql.Named("id", i.Id),
+		sql.Named("username", i.Username),
+		sql.Named("email", i.Email),
+		sql.Named("password", i.Password),
+		sql.Named("age", i.Age),
 		sql.Named("createdat", time.Now()),
 		sql.Named("updatedat", time.Now()))
 	if err != nil {
@@ -86,15 +86,15 @@ func (s *Database) CreateUser(ctx context.Context, user entity.User) (string, er
 	return result, nil
 }
 
-func (s *Database) UpdateUser(ctx context.Context, userId int, user entity.User) (string, error) {
+func (s *Database) UpdateUser(ctx context.Context, id int, i entity.User) (string, error) {
 	var result string
 
 	_, err := s.SqlDb.ExecContext(ctx, "update users set username = @username,email = @email, password = @password, age = @age, updatedat = @updatedat where id = @id",
-		sql.Named("id", userId),
-		sql.Named("username", user.Username),
-		sql.Named("email", user.Email),
-		sql.Named("password", user.Password),
-		sql.Named("age", user.Age),
+		sql.Named("id", id),
+		sql.Named("username", i.Username),
+		sql.Named("email", i.Email),
+		sql.Named("password", i.Password),
+		sql.Named("age", i.Age),
 		sql.Named("updatedat", time.Now()))
 	if err != nil {
 		log.Fatal(err)
@@ -106,11 +106,11 @@ func (s *Database) UpdateUser(ctx context.Context, userId int, user entity.User)
 	return result, nil
 }
 
-func (s *Database) DeleteUser(ctx context.Context, userId int) (string, error) {
+func (s *Database) DeleteUser(ctx context.Context, i int) (string, error) {
 	var result string
 
 	_, err := s.SqlDb.ExecContext(ctx, "delete from users where id=@id",
-		sql.Named("id", userId))
+		sql.Named("id", i))
 	if err != nil {
 		log.Fatal(err)
 		return "", err

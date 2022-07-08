@@ -15,6 +15,12 @@ type DatabaseIface interface {
 	CreateUser(ctx context.Context, user entity.User) (string, error)
 	UpdateUser(ctx context.Context, userId int, user entity.User) (string, error)
 	DeleteUser(ctx context.Context, userId int) (string, error)
+
+	GetOrders(ctx context.Context) ([]entity.OrderWithItems, error)
+	GetOrderByID(ctx context.Context, orderid int) (*entity.OrderWithItems, error)
+	CreateOrder(ctx context.Context, user entity.OrderWithItems) (string, error)
+	UpdateOrder(ctx context.Context, orderId int, order entity.OrderWithItems) (string, error)
+	DeleteOrder(ctx context.Context, orderId int) (string, error)
 }
 
 type Database struct {

@@ -33,8 +33,11 @@ func main() {
 	r := mux.NewRouter()
 
 	userHandler := handler.NewUserHandler()
+	orderHandler := handler.NewOrderHandler()
 	r.HandleFunc("/users", userHandler.UsersHandler)
 	r.HandleFunc("/users/{id}", userHandler.UsersHandler)
+	r.HandleFunc("/orders", orderHandler.OrdersHandler)
+	r.HandleFunc("/orders/{id}", orderHandler.OrdersHandler)
 
 	srv := &http.Server{
 		Handler: r,
