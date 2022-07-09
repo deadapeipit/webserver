@@ -15,7 +15,7 @@ import (
 func (s *Database) GetOrders(ctx context.Context) ([]entity.OrderWithItems, error) {
 	var result []entity.OrderWithItems
 	var orders []entity.Order
-	var items []entity.Item
+	var items []entity.ItemWithOrderID
 
 	rows, err := s.SqlDb.QueryContext(ctx, "sp_getOrders")
 	if err != nil {
@@ -41,7 +41,7 @@ func (s *Database) GetOrders(ctx context.Context) ([]entity.OrderWithItems, erro
 		return nil, errors.New("[mssql] Expected more resultset")
 	}
 	for rows.Next() {
-		var item entity.Item
+		var item entity.ItemWithOrderID
 		err := rows.Scan(
 			&item.ItemCode,
 			&item.Description,
@@ -60,7 +60,7 @@ func (s *Database) GetOrders(ctx context.Context) ([]entity.OrderWithItems, erro
 		tempOrder.Order = o
 		for _, i := range items {
 			if tempOrder.OrderId == i.OrderId {
-				tempItems = append(tempItems, i)
+				tempItems = append(tempItems, *i.ToWithoutOrderID())
 			}
 		}
 		tempOrder.Items = tempItems
@@ -103,7 +103,6 @@ func (s *Database) GetOrderByID(ctx context.Context, i int) (*entity.OrderWithIt
 			&item.ItemCode,
 			&item.Description,
 			&item.Quantity,
-			&item.OrderId,
 		)
 		if err != nil {
 			log.Fatal(err)
@@ -120,19 +119,10 @@ func (s *Database) GetOrderByID(ctx context.Context, i int) (*entity.OrderWithIt
 
 func (s *Database) CreateOrder(ctx context.Context, i entity.OrderWithItems) (string, error) {
 	var result string
-	var tvpVal []entity.ItemType
-
-	for _, val := range i.Items {
-		var row entity.ItemType
-		row.ItemCode = val.ItemCode
-		row.Description = val.Description
-		row.Quantity = val.Quantity
-		tvpVal = append(tvpVal, row)
-	}
 
 	tvp := mssql.TVP{
 		TypeName: "ut_OrderItems",
-		Value:    tvpVal,
+		Value:    i.Items,
 	}
 
 	_, err := s.SqlDb.ExecContext(ctx, "sp_createOrder",
@@ -151,19 +141,10 @@ func (s *Database) CreateOrder(ctx context.Context, i entity.OrderWithItems) (st
 
 func (s *Database) UpdateOrder(ctx context.Context, id int, i entity.OrderWithItems) (string, error) {
 	var result string
-	var tvpVal []entity.ItemType
-
-	for _, val := range i.Items {
-		var row entity.ItemType
-		row.ItemCode = val.ItemCode
-		row.Description = val.Description
-		row.Quantity = val.Quantity
-		tvpVal = append(tvpVal, row)
-	}
 
 	tvp := mssql.TVP{
 		TypeName: "ut_OrderItems",
-		Value:    tvpVal,
+		Value:    i.Items,
 	}
 	_, err := s.SqlDb.ExecContext(ctx, "sp_updateOrder",
 		sql.Named("pOrderId", id),

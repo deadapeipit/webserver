@@ -184,7 +184,6 @@ BEGIN
 	SELECT [ItemCode]
       	,[Description]
       	,[Quantity]
-      	,[OrderId]
 	FROM [dbo].[Items]
 	WHERE [OrderId]=@pOrderId
 END

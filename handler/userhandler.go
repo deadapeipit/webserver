@@ -47,6 +47,9 @@ func (h *UserHandler) UsersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// getUsersHandler
+// Method: GET
+// Example: localhost/users
 func (h *UserHandler) getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	users, err := SqlConnect.GetUsers(ctx)
@@ -57,6 +60,9 @@ func (h *UserHandler) getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	writeJsonResp(w, statusSuccess, users)
 }
 
+// getUsersByIDHandler
+// Method: GET
+// Example: localhost/users/1
 func getUsersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if idInt, err := strconv.Atoi(id); err == nil {
@@ -73,6 +79,17 @@ func getUsersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 	}
 }
 
+// createUsersHandler
+// Method: POST
+// Example: localhost/users
+// JSON Body:
+// {
+//		"id": 1,
+//		"user_name": "user1",
+//		"email": "user@email.com"
+//		"password": "password1",
+//		"age": 22
+// }
 func createUsersHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	decoder := json.NewDecoder(r.Body)
@@ -90,6 +107,17 @@ func createUsersHandler(w http.ResponseWriter, r *http.Request) {
 	writeJsonResp(w, statusSuccess, users)
 }
 
+// updateUserHandler
+// Method: POST / PUT
+// Example: localhost/users/1
+// JSON Body:
+// {
+//		"id": 1,
+//		"user_name": "user1",
+//		"email": "user@email.com"
+//		"password": "password1",
+//		"age": 22
+// }
 func updateUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 
@@ -120,6 +148,9 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 	}
 }
 
+// deleteUserHandler
+// Method: DELETE
+// Example: localhost/users/1
 func deleteUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if id != "" { // get by id

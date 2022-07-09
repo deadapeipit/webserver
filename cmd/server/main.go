@@ -11,8 +11,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var PORT = ":8888"
-
 // Replace with your own connection parameters
 var sqlserver = "localhost"
 var sqlport = 1433
@@ -46,6 +44,7 @@ func main() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	//http.ListenAndServe(PORT, nil)
+	fmt.Printf("Link: http://%s \n", srv.Addr)
+
 	log.Fatal(srv.ListenAndServe())
 }

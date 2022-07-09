@@ -47,6 +47,9 @@ func (h *OrderHandler) OrdersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// getOrdersHandler
+// Method: GET
+// Example: localhost/orders
 func (h *OrderHandler) getOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	orders, err := SqlConnect.GetOrders(ctx)
@@ -57,6 +60,9 @@ func (h *OrderHandler) getOrdersHandler(w http.ResponseWriter, r *http.Request) 
 	writeJsonResp(w, statusSuccess, orders)
 }
 
+// getOrdersByIDHandler
+// Method: GET
+// Example: localhost/orders/1
 func getOrdersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if idInt, err := strconv.Atoi(id); err == nil {
@@ -73,10 +79,32 @@ func getOrdersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 	}
 }
 
+// createOrdersHandler
+// Method: POST
+// Example: localhost/orders
+// JSON Body:
+// {
+// 		"customer_name": "customer",
+// 		"ordered_at": "2022-07-07 15:50:13.793654",
+// 		"items":
+// 		[
+// 			{
+// 				"item_code": "itemcode1",
+// 				"description": "itemdescription1",
+// 				"quantity": 1
+// 			},
+// 			{
+// 				"item_code": "itemcode2",
+// 				"description": "itemdescription2",
+// 				"quantity": 1
+// 			}
+// 		]
+// }
 func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	decoder := json.NewDecoder(r.Body)
 	var order entity.OrderWithItems
+
 	if err := decoder.Decode(&order); err != nil {
 		w.Write([]byte("error decoding json body"))
 		return
@@ -90,6 +118,27 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	writeJsonResp(w, statusSuccess, orders)
 }
 
+// updateOrderHandler
+// Method: POST / PUT
+// Example: localhost/orders/1
+// JSON Body:
+// {
+//		"customer_name": "customer",
+//		"ordered_at": "2022-07-27T12:42:31Z",
+//		"items":
+//		[
+//			{
+//				"item_code": "itemcode1",
+//				"description": "itemdescription1",
+//				"quantity": 1
+//			},
+//			{
+//				"item_code": "itemcode2",
+//				"description": "itemdescription2",
+//				"quantity": 1
+//			}
+//		]
+// }
 func updateOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 
@@ -120,6 +169,9 @@ func updateOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 	}
 }
 
+// deleteOrderHandler
+// Method: DELETE
+// Example: localhost/orders/1
 func deleteOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if id != "" { // get by id

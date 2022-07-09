@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Order struct {
-	OrderId      int       `json:"order_id"`
+	OrderId      int       `json:"order_id,omitempty"`
 	CustomerName string    `json:"customer_name"`
 	OrderedAt    time.Time `json:"ordered_at"`
 }
