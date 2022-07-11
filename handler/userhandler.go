@@ -10,16 +10,19 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type UserHandler struct{}
+
+func InstalUsersHandler(r *mux.Router) {
+	api := UserHandler{}
+	r.HandleFunc("/users", api.UsersHandler)
+	r.HandleFunc("/users/{id}", api.UsersHandler)
+}
+
 type UserHandlerInterface interface {
 	UsersHandler(w http.ResponseWriter, r *http.Request)
 }
 
-type UserHandler struct {
-	//postgrespool *pgxpool.Pool
-}
-
 func NewUserHandler() UserHandlerInterface {
-	//return &UserHandler{postgrespool: postgrespool}
 	return &UserHandler{}
 }
 
@@ -52,12 +55,13 @@ func (h *UserHandler) UsersHandler(w http.ResponseWriter, r *http.Request) {
 // Example: localhost/users
 func (h *UserHandler) getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-	users, err := SqlConnect.GetUsers(ctx)
+
+	users, err := Helper.Tesdb.GetUsers(ctx)
 	if err != nil {
-		writeJsonResp(w, statusError, err.Error())
+		WriteJsonResp(w, StatusError, err.Error())
 		return
 	}
-	writeJsonResp(w, statusSuccess, users)
+	WriteJsonResp(w, StatusSuccess, users)
 }
 
 // getUsersByIDHandler
@@ -66,16 +70,16 @@ func (h *UserHandler) getUsersHandler(w http.ResponseWriter, r *http.Request) {
 func getUsersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if idInt, err := strconv.Atoi(id); err == nil {
-		users, err := SqlConnect.GetUserByID(ctx, idInt)
+		users, err := Helper.Tesdb.GetUserByID(ctx, idInt)
 		if err != nil {
-			writeJsonResp(w, statusError, err.Error())
+			WriteJsonResp(w, StatusError, err.Error())
 			return
 		}
 		if idInt == users.Id {
-			writeJsonResp(w, statusError, "Data not exists")
+			WriteJsonResp(w, StatusError, "Data not exists")
 			return
 		}
-		writeJsonResp(w, statusSuccess, users)
+		WriteJsonResp(w, StatusSuccess, users)
 	}
 }
 
@@ -99,12 +103,12 @@ func createUsersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	users, err := SqlConnect.CreateUser(ctx, user)
+	users, err := Helper.Tesdb.CreateUser(ctx, user)
 	if err != nil {
-		writeJsonResp(w, statusError, err.Error())
+		WriteJsonResp(w, StatusError, err.Error())
 		return
 	}
-	writeJsonResp(w, statusSuccess, users)
+	WriteJsonResp(w, StatusSuccess, users)
 }
 
 // updateUserHandler
@@ -123,11 +127,11 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 
 	if id != "" { // get by id
 		if idInt, err := strconv.Atoi(id); err == nil {
-			if users, err := SqlConnect.GetUserByID(ctx, idInt); err != nil {
-				writeJsonResp(w, statusError, err.Error())
+			if users, err := Helper.Tesdb.GetUserByID(ctx, idInt); err != nil {
+				WriteJsonResp(w, StatusError, err.Error())
 				return
 			} else if idInt == users.Id {
-				writeJsonResp(w, statusError, "Data not exists")
+				WriteJsonResp(w, StatusError, "Data not exists")
 				return
 			} else {
 				decoder := json.NewDecoder(r.Body)
@@ -137,12 +141,12 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 					return
 				}
 
-				users, err := SqlConnect.UpdateUser(ctx, idInt, user)
+				users, err := Helper.Tesdb.UpdateUser(ctx, idInt, user)
 				if err != nil {
-					writeJsonResp(w, statusError, err.Error())
+					WriteJsonResp(w, StatusError, err.Error())
 					return
 				}
-				writeJsonResp(w, statusSuccess, users)
+				WriteJsonResp(w, StatusSuccess, users)
 			}
 		}
 	}
@@ -155,19 +159,19 @@ func deleteUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if id != "" { // get by id
 		if idInt, err := strconv.Atoi(id); err == nil {
-			if users, err := SqlConnect.GetUserByID(ctx, idInt); err != nil {
-				writeJsonResp(w, statusError, err.Error())
+			if users, err := Helper.Tesdb.GetUserByID(ctx, idInt); err != nil {
+				WriteJsonResp(w, StatusError, err.Error())
 				return
 			} else if idInt == users.Id {
-				writeJsonResp(w, statusError, "Data not exists")
+				WriteJsonResp(w, StatusError, "Data not exists")
 				return
 			} else {
-				users, err := SqlConnect.DeleteUser(ctx, idInt)
+				users, err := Helper.Tesdb.DeleteUser(ctx, idInt)
 				if err != nil {
-					writeJsonResp(w, statusError, err.Error())
+					WriteJsonResp(w, StatusError, err.Error())
 					return
 				}
-				writeJsonResp(w, statusSuccess, users)
+				WriteJsonResp(w, StatusSuccess, users)
 			}
 		}
 	}

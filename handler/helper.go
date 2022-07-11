@@ -6,7 +6,11 @@ import (
 	"webserver/database"
 )
 
-var SqlConnect database.DatabaseIface
+type helper struct {
+	Tesdb database.DatabaseIface
+}
+
+var Helper helper
 
 type response struct {
 	Status int         `json:"status"`
@@ -14,11 +18,11 @@ type response struct {
 }
 
 const (
-	statusSuccess int = 0
-	statusError   int = 1
+	StatusSuccess int = 0
+	StatusError   int = 1
 )
 
-func writeJsonResp(w http.ResponseWriter, status int, obj interface{}) {
+func WriteJsonResp(w http.ResponseWriter, status int, obj interface{}) {
 
 	resp := response{
 		Status: status,

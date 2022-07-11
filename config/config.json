@@ -1,0 +1,5 @@
+{
+  "tes_connection_string": "sqlserver://david:david@localhost:1433?database=tes",
+  "secure_user": "david",
+  "secure_password": "david123"
+}

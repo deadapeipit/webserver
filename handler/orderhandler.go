@@ -10,16 +10,19 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type OrderHandler struct{}
+
+func InstallOrderAPI(r *mux.Router) {
+	api := OrderHandler{}
+	r.HandleFunc("/orders", api.OrdersHandler)
+	r.HandleFunc("/orders/{id}", api.OrdersHandler)
+}
+
 type OrderHandlerInterface interface {
 	OrdersHandler(w http.ResponseWriter, r *http.Request)
 }
 
-type OrderHandler struct {
-	//postgrespool *pgxpool.Pool
-}
-
 func NewOrderHandler() OrderHandlerInterface {
-	//return &UserHandler{postgrespool: postgrespool}
 	return &OrderHandler{}
 }
 
@@ -52,12 +55,12 @@ func (h *OrderHandler) OrdersHandler(w http.ResponseWriter, r *http.Request) {
 // Example: localhost/orders
 func (h *OrderHandler) getOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-	orders, err := SqlConnect.GetOrders(ctx)
+	orders, err := Helper.Tesdb.GetOrders(ctx)
 	if err != nil {
-		writeJsonResp(w, statusError, err.Error())
+		WriteJsonResp(w, StatusError, err.Error())
 		return
 	}
-	writeJsonResp(w, statusSuccess, orders)
+	WriteJsonResp(w, StatusSuccess, orders)
 }
 
 // getOrdersByIDHandler
@@ -66,16 +69,16 @@ func (h *OrderHandler) getOrdersHandler(w http.ResponseWriter, r *http.Request) 
 func getOrdersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if idInt, err := strconv.Atoi(id); err == nil {
-		orders, err := SqlConnect.GetOrderByID(ctx, idInt)
+		orders, err := Helper.Tesdb.GetOrderByID(ctx, idInt)
 		if err != nil {
-			writeJsonResp(w, statusError, err.Error())
+			WriteJsonResp(w, StatusError, err.Error())
 			return
 		}
 		if idInt != orders.OrderId {
-			writeJsonResp(w, statusError, "Data not exists")
+			WriteJsonResp(w, StatusError, "Data not exists")
 			return
 		}
-		writeJsonResp(w, statusSuccess, orders)
+		WriteJsonResp(w, StatusSuccess, orders)
 	}
 }
 
@@ -110,12 +113,12 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orders, err := SqlConnect.CreateOrder(ctx, order)
+	orders, err := Helper.Tesdb.CreateOrder(ctx, order)
 	if err != nil {
-		writeJsonResp(w, statusError, err.Error())
+		WriteJsonResp(w, StatusError, err.Error())
 		return
 	}
-	writeJsonResp(w, statusSuccess, orders)
+	WriteJsonResp(w, StatusSuccess, orders)
 }
 
 // updateOrderHandler
@@ -144,11 +147,11 @@ func updateOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 
 	if id != "" { // get by id
 		if idInt, err := strconv.Atoi(id); err == nil {
-			if orders, err := SqlConnect.GetOrderByID(ctx, idInt); err != nil {
-				writeJsonResp(w, statusError, err.Error())
+			if orders, err := Helper.Tesdb.GetOrderByID(ctx, idInt); err != nil {
+				WriteJsonResp(w, StatusError, err.Error())
 				return
 			} else if idInt != orders.OrderId {
-				writeJsonResp(w, statusError, "Data not exists")
+				WriteJsonResp(w, StatusError, "Data not exists")
 				return
 			} else {
 				decoder := json.NewDecoder(r.Body)
@@ -158,12 +161,12 @@ func updateOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 					return
 				}
 
-				orders, err := SqlConnect.UpdateOrder(ctx, idInt, order)
+				orders, err := Helper.Tesdb.UpdateOrder(ctx, idInt, order)
 				if err != nil {
-					writeJsonResp(w, statusError, err.Error())
+					WriteJsonResp(w, StatusError, err.Error())
 					return
 				}
-				writeJsonResp(w, statusSuccess, orders)
+				WriteJsonResp(w, StatusSuccess, orders)
 			}
 		}
 	}
@@ -176,19 +179,19 @@ func deleteOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if id != "" { // get by id
 		if idInt, err := strconv.Atoi(id); err == nil {
-			if orders, err := SqlConnect.GetOrderByID(ctx, idInt); err != nil {
-				writeJsonResp(w, statusError, err.Error())
+			if orders, err := Helper.Tesdb.GetOrderByID(ctx, idInt); err != nil {
+				WriteJsonResp(w, StatusError, err.Error())
 				return
 			} else if idInt != orders.OrderId {
-				writeJsonResp(w, statusError, "Data not exists")
+				WriteJsonResp(w, StatusError, "Data not exists")
 				return
 			} else {
-				order, err := SqlConnect.DeleteOrder(ctx, idInt)
+				order, err := Helper.Tesdb.DeleteOrder(ctx, idInt)
 				if err != nil {
-					writeJsonResp(w, statusError, err.Error())
+					WriteJsonResp(w, StatusError, err.Error())
 					return
 				}
-				writeJsonResp(w, statusSuccess, order)
+				WriteJsonResp(w, StatusSuccess, order)
 			}
 		}
 	}
