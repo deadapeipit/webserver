@@ -32,6 +32,8 @@ func main() {
 
 	sql := database.NewSqlConnection(connString)
 	handler.Helper.Tesdb = sql
+	defer handler.Helper.Tesdb.CloseConnection()
+
 	r := mux.NewRouter()
 	handler.InstallOrderAPI(r)
 	handler.InstalUsersHandler(r)
@@ -48,5 +50,4 @@ func main() {
 	fmt.Printf("Link: http://%s \n", srv.Addr)
 
 	log.Fatal(srv.ListenAndServe())
-	defer sql.CloseConnection()
 }

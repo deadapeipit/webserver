@@ -47,5 +47,6 @@ func NewSqlConnection(connectionString string) DatabaseIface {
 }
 
 func (d *Database) CloseConnection() {
+	fmt.Println("connection closed!")
 	d.SqlDb.Close()
 }

@@ -90,7 +90,7 @@ func getUsersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 // {
 //		"id": 1,
 //		"user_name": "user1",
-//		"email": "user@email.com"
+//		"email": "user@email.com",
 //		"password": "password1",
 //		"age": 22
 // }
@@ -118,7 +118,7 @@ func createUsersHandler(w http.ResponseWriter, r *http.Request) {
 // {
 //		"id": 1,
 //		"user_name": "user1",
-//		"email": "user@email.com"
+//		"email": "user@email.com",
 //		"password": "password1",
 //		"age": 22
 // }
