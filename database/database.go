@@ -10,6 +10,7 @@ import (
 )
 
 type DatabaseIface interface {
+	CloseConnection()
 	GetUsers(ctx context.Context) ([]entity.User, error)
 	GetUserByID(ctx context.Context, userid int) (*entity.User, error)
 	CreateUser(ctx context.Context, user entity.User) (string, error)
@@ -39,8 +40,12 @@ func NewSqlConnection(connectionString string) DatabaseIface {
 	}
 
 	s.SqlDb = db
-	s.SqlDb.SetMaxIdleConns(255)
-	s.SqlDb.SetMaxOpenConns(255)
+	s.SqlDb.SetMaxIdleConns(25)
+	s.SqlDb.SetMaxOpenConns(25)
 
 	return &s
+}
+
+func (d *Database) CloseConnection() {
+	d.SqlDb.Close()
 }

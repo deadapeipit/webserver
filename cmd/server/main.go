@@ -47,4 +47,5 @@ func main() {
 	fmt.Printf("Link: http://%s \n", srv.Addr)
 
 	log.Fatal(srv.ListenAndServe())
+	defer sql.CloseConnection()
 }
