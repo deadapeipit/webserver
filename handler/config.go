@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"strings"
 )
 
 type Configuration struct {
@@ -15,7 +17,15 @@ type Configuration struct {
 var Config = Configuration{}
 
 func GetConfig() error {
-	configPath := "config/config.json"
+	var configPath string
+	wd, _ := os.Getwd()
+
+	//check is debug true
+	if strings.Contains(wd, "cmd") {
+		os.Chdir("..")
+		os.Chdir("..")
+	}
+	configPath = "config/config.json"
 	jsonFile, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Printf("could not read config file: %v", err.Error())
