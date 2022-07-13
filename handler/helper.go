@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"webserver/database"
+
+	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type helper struct {
@@ -11,6 +14,7 @@ type helper struct {
 }
 
 var Helper helper
+var JWT_SIGNING_METHOD = jwt.SigningMethodHS256
 
 type response struct {
 	Status int         `json:"status"`
@@ -21,6 +25,15 @@ const (
 	StatusSuccess int = 0
 	StatusError   int = 1
 )
+
+func EncryptPassword(pwd string) (string, error) {
+	// Hashing the password with the default cost of 10
+	securePassword, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(securePassword), nil
+}
 
 func WriteJsonResp(w http.ResponseWriter, status int, obj interface{}) {
 

@@ -11,6 +11,7 @@ import (
 
 type DatabaseIface interface {
 	CloseConnection()
+	Login(ctx context.Context, userName string) (*entity.User, error)
 	GetUsers(ctx context.Context) ([]entity.User, error)
 	GetUserByID(ctx context.Context, userid int) (*entity.User, error)
 	CreateUser(ctx context.Context, user entity.User) (string, error)

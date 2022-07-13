@@ -35,6 +35,7 @@ func main() {
 	defer handler.Helper.Tesdb.CloseConnection()
 
 	r := mux.NewRouter()
+	handler.InstallJWTHandler(r)
 	handler.InstallOrderAPI(r)
 	handler.InstalUsersHandler(r)
 	handler.InstallUserRequestHandler(r)

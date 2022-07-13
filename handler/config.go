@@ -10,8 +10,7 @@ import (
 
 type Configuration struct {
 	TesConnectionString string `json:"tes_connection_string"`
-	SecureUser          string `json:"secure_user"`
-	SecurePassword      string `json:"secure_password"`
+	SecretKey           string `json:"secret_key"`
 }
 
 var Config = Configuration{}

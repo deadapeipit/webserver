@@ -103,6 +103,13 @@ func createUsersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	encrtedPwd, err := EncryptPassword(user.Password)
+	if err != nil {
+		WriteJsonResp(w, StatusError, err.Error())
+		return
+	}
+	user.Password = encrtedPwd
+
 	users, err := Helper.Tesdb.CreateUser(ctx, user)
 	if err != nil {
 		WriteJsonResp(w, StatusError, err.Error())
