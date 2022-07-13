@@ -148,6 +148,13 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 					return
 				}
 
+				encrtedPwd, err := EncryptPassword(user.Password)
+				if err != nil {
+					WriteJsonResp(w, StatusError, err.Error())
+					return
+				}
+				user.Password = encrtedPwd
+
 				users, err := Helper.Tesdb.UpdateUser(ctx, idInt, user)
 				if err != nil {
 					WriteJsonResp(w, StatusError, err.Error())
