@@ -13,31 +13,31 @@ type User struct {
 }
 
 type UserRequest struct {
-	Id                    int          `json:"id"`
-	Uid                   string       `json:"uid"`
-	Password              string       `json:"password"`
-	FirstName             string       `json:"first_name"`
-	LastName              string       `json:"last_name"`
-	Username              string       `json:"user_name"`
-	Email                 string       `json:"email"`
-	Avatar                string       `json:"avatar"`
-	Gender                string       `json:"gender"`
-	PhoneNumber           string       `json:"phone_number"`
-	SocialInsuranceNumber string       `json:"social_insurance_number"`
-	DateOfBirth           string       `json:"date_of_birth"`
-	Employment            Employment   `json:"employment"`
-	Address               Address      `json:"address"`
-	CreditCard            CreditCard   `json:"credit_card"`
-	Subscription          Subscription `json:"subscription"`
+	Id                    int           `json:"id"`
+	Uid                   string        `json:"uid"`
+	Password              string        `json:"password"`
+	FirstName             string        `json:"first_name"`
+	LastName              string        `json:"last_name"`
+	Username              string        `json:"username"`
+	Email                 string        `json:"email"`
+	Avatar                string        `json:"avatar"`
+	Gender                string        `json:"gender"`
+	PhoneNumber           string        `json:"phone_number"`
+	SocialInsuranceNumber string        `json:"social_insurance_number"`
+	DateOfBirth           string        `json:"date_of_birth"`
+	Employment            *Employment   `json:"employment"`
+	Address               *Address      `json:"address"`
+	CreditCard            *CreditCard   `json:"credit_card"`
+	Subscription          *Subscription `json:"subscription"`
 }
 
 type UserResponse struct {
-	Id        int     `json:"id"`
-	Uid       string  `json:"uid"`
-	FirstName string  `json:"first_name"`
-	LastName  string  `json:"last_name"`
-	Username  string  `json:"user_name"`
-	Address   Address `json:"address"`
+	Id        int      `json:"id"`
+	Uid       string   `json:"uid"`
+	FirstName string   `json:"first_name"`
+	LastName  string   `json:"last_name"`
+	Username  string   `json:"user_name"`
+	Address   *Address `json:"address"`
 }
 
 func (u *UserRequest) ToUserResponse() *UserResponse {
