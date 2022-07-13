@@ -2,6 +2,8 @@ package handler
 
 import (
 	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // var secureUser = "david"
@@ -19,13 +21,25 @@ func SecureMiddleware(next http.Handler) http.Handler {
 			WriteJsonResp(w, StatusError, "bad request")
 			return
 		}
-		if username != Config.SecureUser || password != Config.SecurePassword {
+
+		// // Hashing the password with the default cost of 10
+		// securePassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		// if err != nil {
+		// 	return
+		// }
+		err := bcrypt.CompareHashAndPassword([]byte(Config.SecurePassword), []byte(password))
+		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			WriteJsonResp(w, StatusError, "invalid username / password")
 			return
 		}
-		// fmt.Printf("From config: %s %s \n", Config.SecureUser, Config.SecurePassword)
-		// fmt.Printf("From input: %s %s \n", username, password)
+
+		if username != Config.SecureUser { // || string(securePassword) != Config.SecurePassword {
+			w.WriteHeader(http.StatusUnauthorized)
+			WriteJsonResp(w, StatusError, "invalid username / password")
+			return
+		}
+
 		next.ServeHTTP(w, r)
 	})
 }
