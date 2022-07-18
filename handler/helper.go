@@ -13,6 +13,13 @@ type helper struct {
 	Tesdb database.DatabaseIface
 }
 
+type UserRole struct {
+	Username string `json:"username"`
+	Role     string `json:"role"`
+}
+
+var UserWithRole UserRole
+
 var Helper helper
 var JWT_SIGNING_METHOD = jwt.SigningMethodHS256
 

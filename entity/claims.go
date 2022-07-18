@@ -7,5 +7,4 @@ type MyClaims struct {
 	Iat int    `json:"iat"`
 	Exp int    `json:"exp"`
 	Uid string `json:"uid"`
-	Pwd string `json:"pwd"`
 }

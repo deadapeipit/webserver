@@ -1,18 +1,15 @@
 package handler
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/golang-jwt/jwt"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func SecureMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.Background()
 		if strings.HasPrefix(r.URL.Path, "/jwt") ||
 			strings.HasPrefix(r.URL.Path, "/users") {
 			next.ServeHTTP(w, r)
@@ -74,21 +71,13 @@ func SecureMiddleware(next http.Handler) http.Handler {
 		}
 
 		uid := claims["uid"].(string)
-		pwd := claims["pwd"].(string)
-
-		u, err := Helper.Tesdb.Login(ctx, uid)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			WriteJsonResp(w, StatusError, err.Error())
-			return
-		}
-
-		err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(pwd))
-		if err != nil {
+		if uid == "" {
 			w.WriteHeader(http.StatusUnauthorized)
 			WriteJsonResp(w, StatusError, "invalid username / password")
 			return
 		}
+
+		UserWithRole.Username = uid
 
 		// if uid != Config.SecureUser { // || string(securePassword) != Config.SecurePassword {
 		// 	w.WriteHeader(http.StatusUnauthorized)

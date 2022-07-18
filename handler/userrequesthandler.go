@@ -44,32 +44,6 @@ func (h *UserRequestHandler) getUserRequestHandler(w http.ResponseWriter, r *htt
 	}
 	decoder := json.NewDecoder(res.Body)
 
-	// cara tanpa tampung ke dalam struct sementara:
-	// var tesData []map[string]interface{}
-	// if err := decoder.Decode(&tesData); err != nil {
-	// 	w.Write([]byte("error decoding json body"))
-	// 	return
-	// }
-	// var resp []entity.UserResponse
-	// var m []map[string]interface{}
-	// for _, data := range tesData {
-	// 	tempUser := make(map[string]interface{})
-	// 	var floatID float64 = data["id"].(float64)
-	// 	var id int = int(floatID)
-	// 	tempUser["id"] = id
-	// 	tempUser["uid"] = data["uid"].(string)
-	// 	tempUser["first_name"] = data["first_name"].(string)
-	// 	tempUser["last_name"] = data["last_name"].(string)
-	// 	tempUser["user_name"] = data["username"].(string)
-	// 	tempUser["address"] = data["address"].(map[string]interface{})
-	// 	m = append(m, tempUser)
-	// }
-	// jsonString, _ := json.Marshal(m)
-	// err = json.Unmarshal(jsonString, &resp)
-	// if err != nil {
-	// 	w.Write([]byte("error decoding json body"))
-	// 	return
-	// }
 	var user []entity.UserRequest
 	if err := decoder.Decode(&user); err != nil {
 		w.Write([]byte("error decoding json body"))
