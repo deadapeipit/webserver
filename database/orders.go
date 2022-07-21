@@ -127,7 +127,6 @@ func (s *Database) CreateOrder(ctx context.Context, i entity.OrderWithItems) (st
 
 	_, err := s.SqlDb.ExecContext(ctx, "sp_createOrder",
 		sql.Named("pCustomerName", i.CustomerName),
-		sql.Named("pOrderedAt", i.OrderedAt),
 		sql.Named("pItems", tvp))
 	if err != nil {
 		log.Fatal(err)
@@ -149,7 +148,6 @@ func (s *Database) UpdateOrder(ctx context.Context, id int, i entity.OrderWithIt
 	_, err := s.SqlDb.ExecContext(ctx, "sp_updateOrder",
 		sql.Named("pOrderId", id),
 		sql.Named("pCustomerName", i.CustomerName),
-		sql.Named("pOrderedAt", i.OrderedAt),
 		sql.Named("pItems", tvp))
 	if err != nil {
 		log.Fatal(err)
