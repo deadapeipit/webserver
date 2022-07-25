@@ -33,27 +33,27 @@ func (h *OrderHandler) OrdersHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		if id != "" { // get by id
-			getOrdersByIDHandler(w, r, id)
+			GetOrdersByIDHandler(w, r, id)
 		} else { // get all
-			h.getOrdersHandler(w, r)
+			h.GetOrdersHandler(w, r)
 		}
 	case http.MethodPost:
 		if id != "" {
-			updateOrderHandler(w, r, id)
+			UpdateOrderHandler(w, r, id)
 		} else {
-			createOrdersHandler(w, r)
+			CreateOrdersHandler(w, r)
 		}
 	case http.MethodPut:
-		updateOrderHandler(w, r, id)
+		UpdateOrderHandler(w, r, id)
 	case http.MethodDelete:
-		deleteOrderHandler(w, r, id)
+		DeleteOrderHandler(w, r, id)
 	}
 }
 
 // getOrdersHandler
 // Method: GET
 // Example: localhost/orders
-func (h *OrderHandler) getOrdersHandler(w http.ResponseWriter, r *http.Request) {
+func (h *OrderHandler) GetOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	orders, err := Helper.Tesdb.GetOrders(ctx)
 	if err != nil {
@@ -66,7 +66,7 @@ func (h *OrderHandler) getOrdersHandler(w http.ResponseWriter, r *http.Request) 
 // getOrdersByIDHandler
 // Method: GET
 // Example: localhost/orders/1
-func getOrdersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
+func GetOrdersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if idInt, err := strconv.Atoi(id); err == nil {
 		orders, err := Helper.Tesdb.GetOrderByID(ctx, idInt)
@@ -103,7 +103,7 @@ func getOrdersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 // 			}
 // 		]
 // }
-func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
+func CreateOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	decoder := json.NewDecoder(r.Body)
 	var order entity.OrderWithItems
@@ -142,7 +142,7 @@ func createOrdersHandler(w http.ResponseWriter, r *http.Request) {
 //			}
 //		]
 // }
-func updateOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
+func UpdateOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 
 	if id != "" { // get by id
@@ -175,7 +175,7 @@ func updateOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 // deleteOrderHandler
 // Method: DELETE
 // Example: localhost/orders/1
-func deleteOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
+func DeleteOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 	ctx := context.Background()
 	if id != "" { // get by id
 		if idInt, err := strconv.Atoi(id); err == nil {

@@ -19,7 +19,7 @@ func (s *Database) GetOrders(ctx context.Context) ([]entity.OrderWithItems, erro
 
 	rows, err := s.SqlDb.QueryContext(ctx, "sp_getOrders")
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -31,7 +31,7 @@ func (s *Database) GetOrders(ctx context.Context) ([]entity.OrderWithItems, erro
 			&row.OrderedAt,
 		)
 		if err != nil {
-			log.Fatal(err)
+			//log.Fatal(err)
 			return nil, err
 		}
 		orders = append(orders, row)
@@ -49,7 +49,7 @@ func (s *Database) GetOrders(ctx context.Context) ([]entity.OrderWithItems, erro
 			&item.OrderId,
 		)
 		if err != nil {
-			log.Fatal(err)
+			//log.Fatal(err)
 			return nil, err
 		}
 		items = append(items, item)
@@ -78,7 +78,7 @@ func (s *Database) GetOrderByID(ctx context.Context, i int) (*entity.OrderWithIt
 	rows, err := s.SqlDb.QueryContext(ctx, "sp_getOrderByID",
 		sql.Named("pOrderId", i))
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -89,12 +89,12 @@ func (s *Database) GetOrderByID(ctx context.Context, i int) (*entity.OrderWithIt
 			&order.OrderedAt,
 		)
 		if err != nil {
-			log.Fatal(err)
+			//log.Fatal(err)
 			return nil, err
 		}
 	}
 	if !rows.NextResultSet() {
-		log.Fatal("[mssql] Expected more resultset")
+		//log.Fatal("[mssql] Expected more resultset")
 		return nil, errors.New("[mssql] Expected more resultset")
 	}
 	if rows.Next() {
@@ -105,7 +105,7 @@ func (s *Database) GetOrderByID(ctx context.Context, i int) (*entity.OrderWithIt
 			&item.Quantity,
 		)
 		if err != nil {
-			log.Fatal(err)
+			//log.Fatal(err)
 			return nil, err
 		}
 		items = append(items, item)
@@ -129,7 +129,7 @@ func (s *Database) CreateOrder(ctx context.Context, i entity.OrderWithItems) (st
 		sql.Named("pCustomerName", i.CustomerName),
 		sql.Named("pItems", tvp))
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
 		return "", err
 	}
 
@@ -150,7 +150,7 @@ func (s *Database) UpdateOrder(ctx context.Context, id int, i entity.OrderWithIt
 		sql.Named("pCustomerName", i.CustomerName),
 		sql.Named("pItems", tvp))
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
 		return "", err
 	}
 
@@ -165,7 +165,7 @@ func (s *Database) DeleteOrder(ctx context.Context, i int) (string, error) {
 	_, err := s.SqlDb.ExecContext(ctx, "sp_deleteOrder",
 		sql.Named("pOrderId", i))
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
 		return "", err
 	}
 

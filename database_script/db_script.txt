@@ -65,7 +65,6 @@ CREATE PROCEDURE [dbo].[sp_createOrder]
 (
 	-- Add the parameters for the stored procedure here
 	@pCustomerName varchar(50),
-	@pOrderedAt datetime,
 	@pItems ut_OrderItems READONLY
 )
 AS
@@ -81,7 +80,7 @@ BEGIN
            ,[OrderedAt])
      	VALUES
            (@pCustomerName,
-           @pOrderedAt)
+           @GETDATE())
 
 	SELECT @sNewOrderId = SCOPE_IDENTITY()
 
@@ -103,7 +102,6 @@ CREATE PROCEDURE [dbo].[sp_updateOrder]
 	-- Add the parameters for the stored procedure here
 	@pOrderId int,
 	@pCustomerName varchar(50),
-	@pOrderedAt datetime,
 	@pItems ut_OrderItems READONLY
 )
 AS
@@ -117,7 +115,7 @@ BEGIN
 	BEGIN
 		UPDATE [dbo].[Orders]
 		SET [CustomerName] = @pCustomerName,
-      		[OrderedAt] = @pOrderedAt
+      		[OrderedAt] = GETDATE()
 		WHERE [OrderId]=@pOrderId
 
 		DELETE FROM [dbo].[Items]
