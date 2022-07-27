@@ -255,7 +255,7 @@ func TestDatabase_CreateOrder(t *testing.T) {
 // 	})
 
 // 	t.Run("updateorder empty orderid", func(t *testing.T) {
-// 		mock.ExpectQuery("sp_updateOrder").
+// 		mock.ExpectExec("sp_updateOrder").
 // 			WithArgs(0).
 // 			WillReturnError(errors.New("expect param porderid"))
 // 		got, err := dbtes.UpdateOrder(ctx, 0, OrderWithItems)
@@ -294,15 +294,15 @@ func TestDatabase_DeleteOrder(t *testing.T) {
 	})
 
 	// unknown error
-	// t.Run("deleteorder empty orderid", func(t *testing.T) {
-	// 	mock.ExpectQuery("sp_deleteOrder").
-	// 		WithArgs(0).
-	// 		WillReturnError(errors.New("expect param porderid"))
-	// 	got, err := dbtes.DeleteOrder(ctx, 0)
-	// 	assert.Error(t, err)
-	// 	assert.Equal(t, "", got)
-	// 	assert.Equal(t, "expect param porderid", err.Error())
-	// })
+	t.Run("deleteorder empty orderid", func(t *testing.T) {
+		mock.ExpectExec("sp_deleteOrder").
+			WithArgs(0).
+			WillReturnError(errors.New("expect param porderid"))
+		got, err := dbtes.DeleteOrder(ctx, 0)
+		assert.Error(t, err)
+		assert.Equal(t, "", got)
+		assert.Equal(t, "expect param porderid", err.Error())
+	})
 
 	t.Run("deleteorder success", func(t *testing.T) {
 		mock.ExpectExec("sp_deleteOrder").
