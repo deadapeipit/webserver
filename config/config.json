@@ -1,4 +1,0 @@
-{
-  "tes_connection_string": "sqlserver://david:david@localhost:1433?database=tes",
-  "secret_key":"s3cr3tLog!n"
-}
