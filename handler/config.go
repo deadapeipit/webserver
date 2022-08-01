@@ -15,8 +15,8 @@ type Configuration struct {
 
 var Config = Configuration{}
 
-func GetConfig() error {
-	var configPath string
+func GetConfig(configPath string) error {
+
 	wd, _ := os.Getwd()
 
 	//check is debug true
@@ -24,7 +24,6 @@ func GetConfig() error {
 		os.Chdir("..")
 		os.Chdir("..")
 	}
-	configPath = "config/config.json"
 	jsonFile, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Printf("could not read config file: %v", err.Error())

@@ -19,7 +19,7 @@ import (
 // var sqlpassword = "david"
 
 func main() {
-	handler.GetConfig()
+	handler.GetConfig("config/config.json")
 	// Create connection string
 	// connString := fmt.Sprintf("server=%s;database=%s;port=%d;trusted_connection=yes",
 	// 	sqlserver, sqldbName, sqlport)
