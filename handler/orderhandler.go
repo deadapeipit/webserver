@@ -74,7 +74,7 @@ func GetOrdersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 			WriteJsonResp(w, StatusError, err.Error())
 			return
 		}
-		if idInt != orders.OrderId {
+		if orders == nil {
 			WriteJsonResp(w, StatusError, "Data not exists")
 			return
 		}
@@ -150,7 +150,7 @@ func UpdateOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 			if orders, err := Helper.Tesdb.GetOrderByID(ctx, idInt); err != nil {
 				WriteJsonResp(w, StatusError, err.Error())
 				return
-			} else if idInt != orders.OrderId {
+			} else if orders == nil {
 				WriteJsonResp(w, StatusError, "Data not exists")
 				return
 			} else {
@@ -182,7 +182,7 @@ func DeleteOrderHandler(w http.ResponseWriter, r *http.Request, id string) {
 			if orders, err := Helper.Tesdb.GetOrderByID(ctx, idInt); err != nil {
 				WriteJsonResp(w, StatusError, err.Error())
 				return
-			} else if idInt != orders.OrderId {
+			} else if orders == nil {
 				WriteJsonResp(w, StatusError, "Data not exists")
 				return
 			} else {

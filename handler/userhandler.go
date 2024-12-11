@@ -75,7 +75,7 @@ func getUsersByIDHandler(w http.ResponseWriter, r *http.Request, id string) {
 			WriteJsonResp(w, StatusError, err.Error())
 			return
 		}
-		if idInt == users.Id {
+		if users == nil {
 			WriteJsonResp(w, StatusError, "Data not exists")
 			return
 		}
@@ -137,7 +137,7 @@ func updateUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 			if users, err := Helper.Tesdb.GetUserByID(ctx, idInt); err != nil {
 				WriteJsonResp(w, StatusError, err.Error())
 				return
-			} else if idInt == users.Id {
+			} else if users == nil {
 				WriteJsonResp(w, StatusError, "Data not exists")
 				return
 			} else {
@@ -176,7 +176,7 @@ func deleteUserHandler(w http.ResponseWriter, r *http.Request, id string) {
 			if users, err := Helper.Tesdb.GetUserByID(ctx, idInt); err != nil {
 				WriteJsonResp(w, StatusError, err.Error())
 				return
-			} else if idInt == users.Id {
+			} else if users == nil {
 				WriteJsonResp(w, StatusError, "Data not exists")
 				return
 			} else {
